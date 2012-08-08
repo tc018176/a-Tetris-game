@@ -1,0 +1,428 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel='stylesheet' id='pagelines-stylesheet-css'  href='http://css.40017.cn/cn/new_ui/public/style/base_1.1.min.css' type='text/css' media='all' />
+<style type="text/css">
+	.mianContent{
+		border:1px solid #ddd;
+		margin:10px auto;
+		width:400px;
+		height:560px;
+		background-color:#f5f5f5;
+		position:relative;
+		overflow:hidden;
+	}
+	.mianContent table{
+		width:400px;
+		height:560px;
+		text-align:center;
+	}
+	.mianContent table td{
+		width:20px;
+		height:20px;
+		line-height:20px;
+	}
+	
+	.bgRed{
+		background-color:#ff6600;
+	}
+	.tbFlag{
+		width:400px;
+		margin:10px auto;
+	}
+	
+	.tbFlag td{
+		width:20px;
+		height:20px;
+		text-align:center;
+	}
+</style>
+</head>
+<body>
+	<div class="mianContent" id="mianContent"></div>
+	
+
+	
+<script type="text/javascript">
+	Array.prototype.in_array = function(e){  
+		for(i=0;i<this.length;i++){  
+			if(this[i] == e)  
+			return true;  
+		}  
+		return false;  
+	}  
+	
+	Array.prototype.filter_same_array=function(flag){
+		var _re=[];
+		for(var i=0;i<this.length;i++){
+			var _flag=false
+			for(var j=0;j<_ret.length;j++){
+				if(flag>0){
+					if(_ret[j][0]==this[i][0]){
+						
+					}
+				}
+				
+			}
+			if(_flag){
+				_re.push(this[i]);
+			}
+		}
+	}
+	
+	var $=function(id){
+		return document.getElementById(id);
+	}
+	
+	var dc=function(nodeType){
+		return document.createElement(nodeType);
+	}
+	
+	var getTags=function(tagName,context){
+		return context.getElementsByTagName(tagName);
+	}
+	
+	var shapeLook=[
+					[[[1,1,1,0],[0,0,1,0],[0,0,0,0],[0,0,0,0]],[[0,1,0,0],[0,1,0,0],[1,1,0,0],[0,0,0,0]],[[1,0,0,0],[1,1,1,0],[0,0,0,0],[0,0,0,0]],[[1,1,0,0],[1,0,0,0],[1,0,0,0],[0,0,0,0]]],
+					[[[0,0,0,0],[1,1,1,1],[0,0,0,0],[0,0,0,0]],[[0,0,1,0],[0,0,1,0],[0,0,1,0],[0,0,1,0]],[[0,0,0,0],[1,1,1,1],[0,0,0,0],[0,0,0,0]],[[0,0,1,0],[0,0,1,0],[0,0,1,0],[0,0,1,0]]],
+					[[[1,1,0,0],[1,1,0,0],[0,0,0,0],[0,0,0,0]],[[1,1,0,0],[1,1,0,0],[0,0,0,0],[0,0,0,0]],[[1,1,0,0],[1,1,0,0],[0,0,0,0],[0,0,0,0]],[[1,1,0,0],[1,1,0,0],[0,0,0,0],[0,0,0,0]]],
+					[[[0,1,0,0],[1,1,1,0],[0,0,0,0],[0,0,0,0]],[[1,0,0,0],[1,1,0,0],[1,0,0,0],[0,0,0,0]],[[1,1,1,0],[0,1,0,0],[0,0,0,0],[0,0,0,0]],[[0,0,1,0],[0,1,1,0],[0,0,1,0],[0,0,0,0]]],
+					[[[0,1,0,0],[1,1,1,0],[0,0,0,0],[0,0,0,0]],[[1,0,0,0],[1,1,0,0],[1,0,0,0],[0,0,0,0]],[[1,1,1,0],[0,1,0,0],[0,0,0,0],[0,0,0,0]],[[0,0,1,0],[0,1,1,0],[0,0,1,0],[0,0,0,0]]],
+					[[[1,1,1,0],[1,0,0,0],[0,0,0,0],[0,0,0,0]],[[1,1,0,0],[0,1,0,0],[0,1,0,0],[0,0,0,0]],[[0,0,1,0],[1,1,1,0],[0,0,0,0],[0,0,0,0]],[[1,0,0,0],[1,0,0,0],[1,1,0,0],[0,0,0,0]]]
+					];
+	
+	
+	
+	
+	var Shape=function(ground){
+		this.ground=ground;
+		this.table=ground.table;
+		this.location={x:8,y:0}
+		this.init();
+		this.animating=false;
+	}
+	
+
+	Shape.prototype={
+		init:function(){
+			//alert("")
+			var bigRandom=parseInt(Math.random()*10/2);
+			var random=parseInt(Math.random()*10/3);
+			
+			this.show(this.location,bigRandom,random)
+		},
+		show:function(location,bigRandom,random){//location:左上角的坐标
+			if(this.tdAry){
+				for(var i=0;i<this.tdAry.length;i++){
+					this.tdAry[i].style.backgroundColor="";
+					//this.tdAry[i].innerHTML=0;
+					this.tdAry[i].setAttribute("flag","0");
+				}
+			}
+			var flagAry=[];
+			var trs=getTags("tr",this.table)
+			for(var i=0;i<4;i++){
+				var tr=trs[location.y+i];
+				for(var j=0;j<4;j++){
+					var tds=getTags("td",tr);
+					if(shapeLook[bigRandom][random][i][j]==1){
+						try{
+							tds[location.x+j].style.backgroundColor="#ff6600";
+							//tds[location.x+j].innerHTML=1;
+							tds[location.x+j].setAttribute("flag","1");//getAttribute
+							flagAry.push([location.y+i,location.x+j])//[x,y] x:横坐标 y:纵坐标 
+						}catch(e){
+							console.log(e)
+						}
+						
+					}
+				}
+			}
+			this.flagAry=flagAry;
+			if(!this.setInter){
+				this.setInter=this.animate(1000);
+				this.addEvent(bigRandom,random);
+			}
+		},
+		animate:function(speed){
+			clearInterval(this.setInter);
+			//var flagAry=_this.flagAry;
+			var trs=getTags("tr",this.table);
+			var l=trs.length;
+			///console.log(length)
+			var _this=this;
+			this.table.onclick=function(){
+				clearInterval(setInter)
+			}
+			
+			var setInter=setInterval(function(){
+				var tdAry=[];
+				var _ret=[],isGoOn=true;
+				for(var x=_this.flagAry.length-1;x>=0;x--){
+					if(_ret.in_array(_this.flagAry[x][1])){
+						continue;
+					}else{
+						_ret.push(_this.flagAry[x][1])
+						var td=getTags("td",trs[_this.flagAry[x][0]+1])[_this.flagAry[x][1]];
+						if(td.getAttribute("flag")=="1"){
+							clearInterval(setInter);
+							_this.ground.clearFull()
+							new Shape(_this.ground);
+							isGoOn=false;
+							break;
+							//alert("怎么会到这里")
+						}
+					}
+				}
+				
+				if(isGoOn){
+					for(var x=_this.flagAry.length-1;x>=0;x--){
+						if(l<_this.flagAry[x][0]){
+							continue;
+						}else{
+							try{
+								var td=getTags("td",trs[_this.flagAry[x][0]])[_this.flagAry[x][1]];
+								td.style.backgroundColor="";
+								//td.innerHTML=0;
+								td.setAttribute("flag","0");//getAttribute
+								td=getTags("td",trs[_this.flagAry[x][0]+1])[_this.flagAry[x][1]];
+								td.style.backgroundColor="#ff6600";
+								//td.innerHTML=1;
+								td.setAttribute("flag","1")
+								tdAry.push(td);
+								_this.flagAry[x][0]++	;
+							}catch(e){
+								console.log(e)
+							}
+						}
+					}
+					_this.location.y=_this.location.y+1;
+					if(_this.flagAry[_this.flagAry.length-1][0]==l-1){
+							clearInterval(setInter)
+							_this.ground.clearFull()
+							new Shape(_this.ground);
+					}
+				}
+				_this.tdAry=tdAry;
+				//_this.lcation=
+			},speed)
+			return setInter;
+		},
+		addEvent:function(bigRandom,random){
+			var _this=this;//this指针怎么又没了？？？？
+			document.onkeyup=function(e){
+				e=e||window.event;
+				//console.log(random)
+				//alert(e.keyCode)
+				var trs=getTags("tr",_this.table);
+				switch(e.keyCode){
+								
+					case 37://if(_this.location.x) return;
+							//alert(_this.for)
+							
+									/**
+									var _ret=[_this.flagAry[0]];
+									for(var j=1;j<_this.flagAry.length;j++){
+										var _flag=false;
+										for(var x=0;x<_ret.length;x++){
+											
+											for(var y=j;y<_this.flagAry.length;j++){
+												if(_this.flagAry[j][0]==_ret[x][0]) {
+													if(_this.flagAry[j][1]<_ret[x][1]){
+														_ret[x]=_this.flagAry[j];
+													}
+												}else{
+													
+												}
+											}
+											
+											//if(_this.flagAry[j][0]!==_ret[x][0]){
+											//	
+											//} 
+										}
+										
+									}
+								**/
+								
+									var ary1=null,ary2=null,ary3=null,ary4=null,_ret=[];
+									for(var i=0;i<_this.flagAry.length;i++){//这鸟地方想不出好办法了
+											if(ary1==null||ary1[0]==_this.flagAry[i][0]){
+												if(ary1==null||ary1[1]>_this.flagAry[i][1])
+													ary1=_this.flagAry[i];
+											}else if(ary2==null||ary2[0]==_this.flagAry[i][0]){
+												if(ary2==null||ary2[1]>_this.flagAry[i][1])
+													ary2=_this.flagAry[i];
+											}else if(ary3==null||ary3[0]==_this.flagAry[i][0]){
+												if(ary3==null||ary3[1]>_this.flagAry[i][1])
+													ary3=_this.flagAry[i];
+											}else if(ary4==null||ary4[0]==_this.flagAry[i][0]){
+												if(ary4==null||ary4[1]>_this.flagAry[i][1])
+													ary4=_this.flagAry[i];
+											}
+											if(i==_this.flagAry.length-1){
+												if(ary1!=null) _ret.push(ary1);
+												if(ary2!=null) _ret.push(ary2);
+												if(ary3!=null) _ret.push(ary3);
+												if(ary4!=null) _ret.push(ary4);
+											}
+									}
+									
+									
+								
+								
+								
+								for(var i=0;i<_this.flagAry.length;i++){
+									if(_this.flagAry[i][1]==0) return;
+									//for(var a=0;a<_ret.length;a++){
+									//	var td=getTags("td",trs[_ret[a][0]])[_ret[a][1]--];
+									//	if(td.getAttribute("flag")=="1") return;
+									//}
+									
+									//console.log(_this.flagAry[i][1])
+									//if(td.getAttribute("flag")=="1") return;
+									//if(trs[]_this.flagAry[i][1])
+									
+									//if()
+								}
+								
+								
+								for(var i=0;i<_ret.length;i++){
+								
+									if(getTags("td",trs[_ret[i][0]])[_ret[i][1]-1].getAttribute("flag")=="1")
+										return;
+								}
+								
+								//console.log(_this.flagAry)
+								var x=--_this.location.x;
+								var y=_this.location.y;
+								for(var i=0;i<_this.flagAry.length;i++){
+									_this.flagAry[i][1]--;
+								}
+								_this.show({
+									x:x,
+									y:y
+								},bigRandom,random)
+							
+							//console.log(_this.location)
+							//console.log(x+" "+y)
+							
+							//左箭头
+							break;
+					case 38://上箭头
+							random++;
+							random=random%shapeLook[bigRandom].length;
+							
+							//x=(random++)%shapeLook[bigRandom].length;
+							//console.log(x)
+							//console.log(random++)
+							_this.show({
+								x:_this.location.x,
+								y:_this.location.y
+							},bigRandom,random)
+							break;
+					case 39://右箭头
+							for(var i=0;i<_this.flagAry.length;i++){
+								if(_this.flagAry[i][1]==19) return;
+							}
+							
+									var ary1=null,ary2=null,ary3=null,ary4=null,_ret=[];
+									for(var i=0;i<_this.flagAry.length;i++){//这鸟地方想不出好办法了
+											if(ary1==null||ary1[0]==_this.flagAry[i][0]){
+												if(ary1==null||ary1[1]<_this.flagAry[i][1])
+													ary1=_this.flagAry[i];
+											}else if(ary2==null||ary2[0]==_this.flagAry[i][0]){
+												if(ary2==null||ary2[1]<_this.flagAry[i][1])
+													ary2=_this.flagAry[i];
+											}else if(ary3==null||ary3[0]==_this.flagAry[i][0]){
+												if(ary3==null||ary3[1]<_this.flagAry[i][1])
+													ary3=_this.flagAry[i];
+											}else if(ary4==null||ary4[0]==_this.flagAry[i][0]){
+												if(ary4==null||ary4[1]<_this.flagAry[i][1])
+													ary4=_this.flagAry[i];
+											}
+											if(i==_this.flagAry.length-1){
+												if(ary1!=null) _ret.push(ary1);
+												if(ary2!=null) _ret.push(ary2);
+												if(ary3!=null) _ret.push(ary3);
+												if(ary4!=null) _ret.push(ary4);
+											}
+									}
+								for(var i=0;i<_ret.length;i++){
+									if(getTags("td",trs[_ret[i][0]])[_ret[i][1]+1].getAttribute("flag")=="1")
+										return;
+								}
+							//console.log(_this.flagAry)
+							var x=++_this.location.x;
+							var y=_this.location.y;
+							for(var i=0;i<_this.flagAry.length;i++){
+								_this.flagAry[i][1]++;
+							}
+							_this.show({
+								x:x,
+								y:y
+							},bigRandom,random)
+							break;
+					case 40:_this.setInter=_this.animate(10)//下箭头
+							break;
+				}
+			}
+		},
+		removeEvent:function(table){
+			document.onkeydown=null;
+		}
+	}
+	
+	function Ground(id){
+		this.id=id;
+		this.table=this.initTable();
+	}
+	
+	Ground.prototype={
+		clearFull:function(){//清除排满行
+			var trs=getTags("tr",this.table);
+			for(var i=0,l=trs.length;i<l;i++){
+				var tds=getTags("td",trs[i]);
+				var x=0;
+				for(var j=0,_l=tds.length;j<_l;j++){
+					if(tds[j].getAttribute("flag")=="1"){
+						x++;
+					}
+				}
+				if(x==tds.length){
+					this.table.deleteRow(i);
+					var tr=this.table.insertRow(2)
+					for(var j=0;j<20;j++){
+						var td=tr.insertCell(j);
+						td.innerHTML=0
+					}
+				}
+			}
+		},
+		initTable:function(){
+			var table=dc("table")
+			table.setAttribute("cellpadding","0");
+			table.setAttribute("cellspacing","0");
+			table.setAttribute("border","0");
+			for(var i=0;i<30;i++){//i纵坐标，j横坐标
+				var tr=table.insertRow(i);
+				if(i==0||i==1) tr.style.display="none";
+				for(var j=0;j<20;j++){
+					var td=tr.insertCell(j);
+					//td.innerHTML=0
+				}
+			}
+			$(this.id).appendChild(table)
+			return table;
+		}
+	}
+	
+	var Game=function(){
+		var ground=new Ground("mianContent");
+		new Shape(ground);
+	}
+	
+	new Game();
+</script>
+</body>
+</html>
